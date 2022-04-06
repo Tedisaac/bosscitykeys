@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'package:bosscitykeys/constants/strings.dart';
+import 'package:bosscitykeys/services/api_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:bosscitykeys/pages/vehiclespage.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -124,13 +129,11 @@ Widget buildLoginButton(BuildContext context,TextEditingController _controllerEm
     width: double.infinity,
     child: ElevatedButton(
       onPressed: (){
+       /* final API_MANAGER loginAPI = new API_MANAGER();
         var email = _controllerEmail.text;
         var password = _controllerPassword.text;
-        print("email: " + email + "password: " + password);
-        // _tokenInfo = API_Manager().sendCredentials(_controllerEmail.text, secret);
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => VehiclePage()),
-        );
+        loginAPI.login(email, password, "test");*/
+        login(context,_controllerEmail,_controllerPassword);
       },
       child: Text('Sign in'),
       style: ElevatedButton.styleFrom(
@@ -143,6 +146,7 @@ Widget buildLoginButton(BuildContext context,TextEditingController _controllerEm
     ),
   );
 }
+
 
 
 class _LoginPageState extends State<LoginPage> {
@@ -204,5 +208,36 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+}
+Future<void> login(BuildContext context,TextEditingController _controllerEmail,TextEditingController _controllerPassword) async{
+  if(_controllerEmail.text.isNotEmpty && _controllerPassword.text.isNotEmpty){
+    var deviceName = "test_device";
+    var client = http.Client();
+    var loginResponse = await client.post(
+      Uri.parse(Strings.login_url),
+      body: ({
+        'email' : _controllerEmail.text,
+        'password' : _controllerPassword.text,
+        'device_name' : deviceName,
+      }),
+    );
+
+
+    if(loginResponse.statusCode == 200){
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => VehiclePage()),
+      );
+      var token = loginResponse.body;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+    }else{
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Invalid credentials")));
+    }
+  }else{
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Please fill in all fields"),));
   }
 }

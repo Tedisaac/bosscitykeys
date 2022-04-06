@@ -14,7 +14,9 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Details Page'),
+        title: Text(
+          'Details'
+        ),
         backgroundColor: Colors.amber,
       ),
       body: getBody()
