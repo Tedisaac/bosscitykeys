@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bosscitykeys/constants/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:bosscitykeys/pages/detailspage.dart';
@@ -6,6 +8,7 @@ import 'loginpage.dart';
 import 'package:http/http.dart' as http;
 import 'package:bosscitykeys/models/vehicledatamodel.dart';
 import 'dart:convert' as cnv;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class VehiclePage extends StatefulWidget {
@@ -16,9 +19,8 @@ class VehiclePage extends StatefulWidget {
 }
 
 class _VehiclePageState extends State<VehiclePage> {
-  List<VehicleDataModel>? vehicleModel;
-  List<dynamic>? body;
-  getVehicleData() async{
+  List<Data> data = [];
+  Future<List<Data>> getVehicleData() async{
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
     var client = http.Client();
@@ -30,21 +32,15 @@ class _VehiclePageState extends State<VehiclePage> {
         'Authorization': 'Bearer $token',
       }),
     );
+    Map<String, dynamic> vehicleData = cnv.jsonDecode(vehiclesResponse.body.toString()) as Map<String,dynamic>;
+    var details = vehicleData['data'];
     if(vehiclesResponse.statusCode == 200){
-      var vehicleJsonData = vehiclesResponse.body;
-      Map<String, dynamic> map = cnv.jsonDecode(vehicleJsonData);
-      var obj = VehicleDataModel.fromJson(map);
-      var info = obj.data;
-      info!.map((e){
-        print(e.id);
-      }).toList();
-      body = map["data"];
-      vehicleModel = body!.map((dynamic item) => VehicleDataModel.fromJson(item)).toList();
-      print(vehicleModel);
-      setState(() {
-
-      });
+      for(Map<String,dynamic> i in details){
+        data.add(Data.fromJson(i));
+      }
+      return data;
     }else{
+      return data;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Please Check Your Internet Connection!")));
     }
@@ -60,7 +56,6 @@ class _VehiclePageState extends State<VehiclePage> {
   }
   @override
   Widget build(BuildContext context) {
-    getVehicleData();
     return Scaffold(
       appBar: AppBar(
         title: Text('Vehicle Tracking'),
@@ -79,8 +74,8 @@ class _VehiclePageState extends State<VehiclePage> {
         color: Colors.amberAccent,
         child: FutureBuilder(
           future: getVehicleData(),
-          builder: (context, index){
-            if(index.data != null){
+          builder: (context, AsyncSnapshot<List<Data>> snapshot){
+            if(snapshot == null){
               return Container(
                 child: Center(
                   child: Text(
@@ -90,7 +85,7 @@ class _VehiclePageState extends State<VehiclePage> {
               );
             }else{
               return ListView.builder(
-                  itemCount: vehicleModel?.length,
+                  itemCount: data.length,
                   //shrinkWrap: true,
                   itemBuilder: (context,index) {
                     return Container(
@@ -117,7 +112,7 @@ class _VehiclePageState extends State<VehiclePage> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Text(
-                                        body![index]["model"],
+                                        snapshot.data![index].model.toString(),
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold,
@@ -125,7 +120,7 @@ class _VehiclePageState extends State<VehiclePage> {
                                         ),
                                       ),
                                       Text(
-                                        body![index]["plate_number"],
+                                       snapshot.data![index].platenumber,
                                         style: TextStyle(
                                             color: Colors.black38,
                                             fontSize: 18.0
@@ -140,7 +135,12 @@ class _VehiclePageState extends State<VehiclePage> {
                                 padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
                                 child: TextButton(
                                   onPressed: () {
-                                    var id = body![index]["id"];
+                                    var id = snapshot.data![index].id.toString();
+                                    var model = snapshot.data![index].model.toString();
+                                    var regNo = snapshot.data![index].platenumber.toString();
+                                    var year = snapshot.data![index].modelyear.toString();
+                                    var chasisNo = snapshot.data![index].chasisnumber.toString();
+                                    saveCarData(id,model,regNo,year,chasisNo);
                                     Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) => DetailsPage(),)
                                     );
@@ -167,5 +167,14 @@ class _VehiclePageState extends State<VehiclePage> {
       ),
     );
   }
+}
+
+Future<void> saveCarData(var id,var model, var regNo,var chasisNo, var year) async{
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('id', id);
+  await prefs.setString('model', model);
+  await prefs.setString('reg_no', regNo);
+  await prefs.setString('year', year);
+  await prefs.setString('chasis_no', chasisNo);
 }
 

@@ -1,55 +1,30 @@
-class VehicleDataModel {
-  List<Data>? data;
+class VehicleDataModel{
+  VehicleDataModel({required this.data});
+  final List<Data> data;
 
-  VehicleDataModel({this.data});
-
-  VehicleDataModel.fromJson(Map<String, dynamic> json) {
-    if (json['data'] != null) {
-      data = <Data>[];
-      json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
-    }
-    return data;
+  factory VehicleDataModel.fromJson(Map<String, dynamic> json){
+    final detailsData = json['data'] as List<dynamic>;
+    final data = detailsData != null ? detailsData.map((detailData) => Data.fromJson(detailData)).toList() : <Data>[];
+    return VehicleDataModel(data: data);
   }
 }
 
-class Data {
-  int? id;
-  String? model;
-  String? plateNumber;
-  String? chasisNumber;
-  String? modelYear;
+class Data{
+  Data({required this.id, required this.model, required this.platenumber, required this.chasisnumber, required this.modelyear});
+  final int id;
+  final String model;
+  final String platenumber;
+  final String chasisnumber;
+  final String modelyear;
 
-  Data(
-      {this.id,
-        this.model,
-        this.plateNumber,
-        this.chasisNumber,
-        this.modelYear});
-
-  Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    model = json['model'];
-    plateNumber = json['plate_number'];
-    chasisNumber = json['chasis_number'];
-    modelYear = json['model_year'];
+  factory Data.fromJson(Map<String, dynamic> json){
+    final id = json['id'] as int;
+    final model = json['model'] as String;
+    final platenumber = json['plate_number'] as String;
+    final chasisnumber = json['chasis_number'] as String;
+    final modelyear = json['model_year'] as String;
+    return Data(id: id, model: model, platenumber: platenumber, chasisnumber: chasisnumber, modelyear: modelyear);
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['model'] = this.model;
-    data['plate_number'] = this.plateNumber;
-    data['chasis_number'] = this.chasisNumber;
-    data['model_year'] = this.modelYear;
-    return data;
-  }
+
 }
