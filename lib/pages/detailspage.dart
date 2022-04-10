@@ -16,17 +16,20 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  LatestRecord? latestRecord;
   var data;
-  var model,regNo,chasisNo,modelYear;
-  Future getData() async{
+  var model = '...';
+  var regNo = '...';
+  var chasisNo = '...';
+  var modelYear = '...';
+  Future<LatestRecord> getData() async{
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
     var carId = prefs.getString('id');
-    model = prefs.get('model');
-    regNo = prefs.get('reg_no');
-    chasisNo = prefs.get('chasis_no');
-    modelYear = prefs.get('year');
+    model = prefs.getString('model') ?? '';
+    print(model);
+    regNo = prefs.getString('reg_no') ?? '';
+    chasisNo = prefs.getString('chasis_no') ?? '';
+    modelYear = prefs.getString('year') ?? '';
     var newUrl = Strings.cars_list+"/$carId/records/latest";
     var client = http.Client();
     var detailsResponse = await client.get(
@@ -36,14 +39,17 @@ class _DetailsPageState extends State<DetailsPage> {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         }));
+    var detailsData = cnv.jsonDecode(detailsResponse.body);
+    data = detailsData['data'];
+    LatestRecord latestRecord = LatestRecord.fromJson(data);
     if(detailsResponse.statusCode == 200){
-      var detailsData = cnv.jsonDecode(detailsResponse.body);
-      data = detailsData['data'];
-      latestRecord = LatestRecord.fromJson(data);
+
 
       //print(data['longitude']);
       //var latitude = prefs.setString('latitude', latestRecord.latitude!);
       //var longitude = prefs.setString('longitude', latestRecord.longitude!);
+      return latestRecord;
+    }else{
       return latestRecord;
     }
   }
@@ -51,7 +57,7 @@ class _DetailsPageState extends State<DetailsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    //getData();
   }
   @override
   Widget build(BuildContext context) {
@@ -69,19 +75,19 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget getBody(){
     return FutureBuilder(
         future: getData(),
-        builder: (context,AsyncSnapshot snapshot){
-          var id = latestRecord?.id;
-          var ignition = latestRecord?.ignition;
-          var speed = latestRecord?.speed;
-          var voltage = latestRecord?.voltage;
-          var iDate = latestRecord?.iDate;
-          var iTime = latestRecord?.iTime;
-          var extBatt = latestRecord?.extBatt;
-          var dateTime = "$iDate  $iTime";
+        builder: (context,AsyncSnapshot<LatestRecord> snapshot){
+
+          //var id = latestRecord?.id as int;
+          var ignition = snapshot.data?.ignition ?? '...';
+          var speed =snapshot.data?.speed ?? '...';
+          var voltage = snapshot.data?.voltage ?? '...';
+          var iDate = snapshot.data?.iDate ?? '...';
+          var iTime = snapshot.data?.iTime ?? '...';
+          var extBatt = snapshot.data?.extBatt ?? '...';
+          var dateTime = "$iDate  $iTime" as String;
           var speedKm = "$speed Km/Hr";
-          var zero = 0;
           var one = 1;
-          if(id == null){
+          if(ignition == null) {
             return Center(
               child: CircularProgressIndicator(),
             );
@@ -567,12 +573,10 @@ class _DetailsPageState extends State<DetailsPage> {
                       width: 300.0,
                       child: ElevatedButton(
                         onPressed: (){
-                          var latitude = latestRecord?.latitude;
-                          var longitude = latestRecord?.longitude;
-                          saveLocation(latitude,longitude);
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => MapPage())
-                          );
+                          var latitude = snapshot.data?.latitude ?? '';
+                          var longitude = snapshot.data?.longitude ?? '';
+                          saveLocation(context, latitude,longitude);
+
                         },
                         child: Text("Locate in Map"),
                         style: ElevatedButton.styleFrom(
@@ -595,10 +599,13 @@ class _DetailsPageState extends State<DetailsPage> {
 
 }
 
-Future<void> saveLocation(var latitude, var longitude) async{
+Future<void> saveLocation(BuildContext context, var latitude, var longitude) async{
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString('latitude', latitude);
   await prefs.setString('longitude', longitude);
+  Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => MapPage())
+  );
 }
 class Details{
   final String id, ignition,latitude, longitude, speed , voltage , iTime, iDate, extBatt;

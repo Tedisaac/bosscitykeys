@@ -82,11 +82,15 @@ class _MapPageState extends State<MapPage> {
   }
 
   Widget button(VoidCallback func,IconData iconData){
-    return FloatingActionButton(
-      onPressed: func,
-      materialTapTargetSize: MaterialTapTargetSize.padded,
-      backgroundColor: Colors.amberAccent,
-      child: Icon(iconData,size: 30.0,),
+    return Container(
+      height: 40.0,
+      width: 40.0,
+      child: FloatingActionButton(
+        onPressed: func,
+        materialTapTargetSize: MaterialTapTargetSize.padded,
+        backgroundColor: Colors.amberAccent,
+        child: Icon(iconData,size: 25.0,),
+      ),
     );
   }
 
@@ -98,50 +102,37 @@ class _MapPageState extends State<MapPage> {
           title: Text('Map'),
           backgroundColor: Colors.amber,
         ),
-        body: FutureBuilder(
-          future: getLocation(),
-          builder: (context,snapshot){
-            if(lat == null && long == null){
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }else{
-              return Stack(
-                children: <Widget>[
-                  Positioned.fill(
-                    child:  GoogleMap(
-                      onMapCreated: _onMapCreated,
-                      initialCameraPosition: CameraPosition(
-                          target: LatLng(lat,long),
-                          zoom: 18.0
-                      ),
-                      mapType: _currentMapType,
-                      markers: _marker,
-                      onCameraMove: _onCameraMove,
-                    ),
-                  ),
-                  Positioned(
-                    top: 20,
-                    left: 0,
-                    right: 10,
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: Column(
-                        children: <Widget>[
-                          button(_onMapTypePressed, Icons.map),
-                          SizedBox(height: 20.0,),
-                          //button(_vehiclePower, Icons.power)
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            }
-
-          },
-        )
+        body: Stack(
+    children: <Widget>[
+    Positioned.fill(
+      child:  GoogleMap(
+      onMapCreated: _onMapCreated,
+      initialCameraPosition: CameraPosition(
+          target: LatLng(lat,long),
+          zoom: 18.0
+      ),
+      mapType: _currentMapType,
+      markers: _marker,
+      onCameraMove: _onCameraMove,
+    ),
+    ),
+    Positioned(
+      top: 20,
+      left: 0,
+      right: 10,
+      child: Align(
+      alignment: Alignment.topRight,
+      child: Column(
+      children: <Widget>[
+      button(_onMapTypePressed, Icons.map),
+      SizedBox(height: 20.0,),
+      //button(_vehiclePower, Icons.power)
+    ],
+    ),
+    ),
+    ),
+    ],
+    )
     );
   }
-
 }

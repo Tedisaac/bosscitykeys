@@ -56,6 +56,7 @@ class _VehiclePageState extends State<VehiclePage> {
   }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Vehicle Tracking'),
@@ -63,6 +64,7 @@ class _VehiclePageState extends State<VehiclePage> {
         actions: [
           new IconButton(
               onPressed: (){
+                clearData();
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => LoginPage())
                 );
@@ -78,9 +80,7 @@ class _VehiclePageState extends State<VehiclePage> {
             if(snapshot == null){
               return Container(
                 child: Center(
-                  child: Text(
-                    'Loading...'
-                  ),
+                  child: CircularProgressIndicator(),
                 ),
               );
             }else{
@@ -140,10 +140,8 @@ class _VehiclePageState extends State<VehiclePage> {
                                     var regNo = snapshot.data![index].platenumber.toString();
                                     var year = snapshot.data![index].modelyear.toString();
                                     var chasisNo = snapshot.data![index].chasisnumber.toString();
-                                    saveCarData(id,model,regNo,year,chasisNo);
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => DetailsPage(),)
-                                    );
+                                    saveCarData(context, id,model,regNo,year,chasisNo);
+
                                   },
                                   child: Text('Details'),
                                   style: TextButton.styleFrom(
@@ -169,12 +167,20 @@ class _VehiclePageState extends State<VehiclePage> {
   }
 }
 
-Future<void> saveCarData(var id,var model, var regNo,var chasisNo, var year) async{
+void clearData() async{
+  final preferences = await SharedPreferences.getInstance();
+  await preferences.clear();
+}
+
+Future<void> saveCarData(BuildContext context,var id,var model, var regNo,var chasisNo, var year) async{
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString('id', id);
   await prefs.setString('model', model);
   await prefs.setString('reg_no', regNo);
   await prefs.setString('year', year);
   await prefs.setString('chasis_no', chasisNo);
+  Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => DetailsPage(),)
+  );
 }
 

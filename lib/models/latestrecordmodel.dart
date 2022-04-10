@@ -1,65 +1,67 @@
 class LatestRecordModel {
-  LatestRecord? data;
+  LatestRecordModel({
+    required this.data,
+  });
+  final LatestRecord data;
 
-  LatestRecordModel({this.data});
-
-  LatestRecordModel.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? new LatestRecord.fromJson(json['data']) : null;
+  factory LatestRecordModel.fromJson(Map<String, dynamic> json){
+    final data = LatestRecord.fromJson(json['data']);
+    return LatestRecordModel(data: data);
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    return data;
+    final _data = <String, dynamic>{};
+    _data['data'] = data.toJson();
+    return _data;
   }
 }
 
 class LatestRecord {
-  int? id;
-  String? ignition;
-  String? latitude;
-  String? longitude;
-  String? speed;
-  String? voltage;
-  String? iDate;
-  String? iTime;
-  String? extBatt;
+  LatestRecord({
+    required this.id,
+    required this.ignition,
+    required this.latitude,
+    required this.longitude,
+    required this.speed,
+    required this.voltage,
+    required this.iDate,
+    required this.iTime,
+    required this.extBatt,
+  });
+  final int id;
+  final String ignition;
+  final String latitude;
+  final String longitude;
+  final String speed;
+  final String voltage;
+  final String iDate;
+  final String iTime;
+  final String extBatt;
 
-  LatestRecord({this.id,
-    this.ignition,
-    this.latitude,
-    this.longitude,
-    this.speed,
-    this.voltage,
-    this.iDate,
-    this.iTime,
-    this.extBatt});
-
-  LatestRecord.fromJson(Map<String, dynamic> json) {
-    id = json['id'] as int;
-    ignition = json['ignition'] as String;
-    latitude = json['latitude'] as String;
-    longitude = json['longitude'] as String;
-    speed = json['speed'] as String;
-    voltage = json['voltage'] as String;
-    iDate = json['i_date'] as String;
-    iTime = json['i_time'] as String;
-    extBatt = json['ext_batt'] as String;
+  factory LatestRecord.fromJson(Map<String, dynamic> json){
+    final id = json['id'] as int;
+    final ignition = json['ignition'] as String;
+    final latitude = json['latitude'] as String;
+    final longitude = json['longitude'] as String;
+    final speed = json['speed'] as String;
+    final voltage = json['voltage'] as String;
+    final iDate = json['i_date'] as String;
+    final iTime = json['i_time'] as String;
+    final extBatt = json['ext_batt'] as String;
+    return LatestRecord(id: id, ignition: ignition, latitude: latitude, longitude: longitude, speed: speed, voltage: voltage, iDate: iDate, iTime: iTime, extBatt: extBatt);
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['ignition'] = this.ignition;
-    data['latitude'] = this.latitude;
-    data['longitude'] = this.longitude;
-    data['speed'] = this.speed;
-    data['voltage'] = this.voltage;
-    data['i_date'] = this.iDate;
-    data['i_time'] = this.iTime;
-    data['ext_batt'] = this.extBatt;
-    return data;
+    final _data = <String, dynamic>{};
+    _data['id'] = id;
+    _data['ignition'] = ignition;
+    _data['latitude'] = latitude;
+    _data['longitude'] = longitude;
+    _data['speed'] = speed;
+    _data['voltage'] = voltage;
+    _data['i_date'] = iDate;
+    _data['i_time'] = iTime;
+    _data['ext_batt'] = extBatt;
+    return _data;
   }
 }

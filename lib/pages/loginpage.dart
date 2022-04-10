@@ -186,15 +186,20 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget> [
+                      Container(
+                        child: Image.asset('assets/images/big.png'),
+                        width: 170,
+                        height: 80,
+                      ),
                       Text(
                         'Sign In',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 40,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 50),
+                      SizedBox(height: 20),
                       buildEmail(_controllerEmail),
                       SizedBox(height: 20),
                       buildPassword(_controllerPassword),
@@ -226,7 +231,7 @@ Future<void> login(BuildContext context,TextEditingController _controllerEmail,T
 
 
     if(loginResponse.statusCode == 200){
-      Navigator.of(context).push(
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => VehiclePage()),
       );
       var token = loginResponse.body;
