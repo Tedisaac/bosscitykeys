@@ -232,8 +232,7 @@ Future<void> login(BuildContext context,TextEditingController _controllerEmail,T
 
     if(loginResponse.statusCode == 200){
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => VehiclePage()),
-      );
+        MaterialPageRoute(builder: (context) => VehiclePage()),);
       var token = loginResponse.body;
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);

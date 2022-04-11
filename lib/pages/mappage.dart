@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:bosscitykeys/pages/playback.dart';
 
 
 class MapPage extends StatefulWidget {
@@ -101,6 +102,17 @@ class _MapPageState extends State<MapPage> {
         appBar: AppBar(
           title: Text('Map'),
           backgroundColor: Colors.amber,
+          actions: [
+            new IconButton(
+                onPressed: (){
+                  showPlayBackDialog(context);
+                },
+                icon: Image.asset(
+                    'assets/images/playback.png',
+                color: Colors.white,
+                width: 20.0,
+                height: 20.0,))
+          ],
         ),
         body: Stack(
     children: <Widget>[
@@ -124,6 +136,7 @@ class _MapPageState extends State<MapPage> {
       alignment: Alignment.topRight,
       child: Column(
       children: <Widget>[
+
       button(_onMapTypePressed, Icons.map),
       SizedBox(height: 20.0,),
       //button(_vehiclePower, Icons.power)
@@ -135,4 +148,71 @@ class _MapPageState extends State<MapPage> {
     )
     );
   }
+}
+showPlayBackDialog(BuildContext context){
+  int _value = 1;
+  AlertDialog dialog = AlertDialog(
+    title: Text("Choose Playback Day"),
+    actions: [
+      Row(
+        children: [
+          Radio(
+            value: 1,
+            groupValue: _value,
+            onChanged: (value){
+            },
+          ),
+          SizedBox(width: 10.0,),
+          Text("Today")
+        ],
+      ),
+      Row(
+        children: [
+          Radio(
+            value: 2,
+            groupValue: _value,
+            onChanged: (value){
+
+            },
+          ),
+          SizedBox(width: 10.0,),
+          Text("Yesterday")
+        ],
+      ),
+      Row(
+        children: [
+          SizedBox(width: 10.0,),
+          TextButton(onPressed: (){
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => PlayBack())
+            ).then((result) => Navigator.pop(context));
+
+          }, child: Text("Show"),
+            style: TextButton.styleFrom(
+                backgroundColor: Colors.amber,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                primary: Colors.white
+            ),),
+          SizedBox(width: 30.0,),
+          TextButton(onPressed: (){
+            Navigator.pop(context);
+          }, child: Text("Cancel"),
+            style: TextButton.styleFrom(
+                backgroundColor: Colors.amber,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                primary: Colors.white
+            ),),
+        ],
+      ),
+
+
+    ],
+  );
+  showDialog(context: context, builder: (BuildContext context){
+    return dialog;
+  });
 }

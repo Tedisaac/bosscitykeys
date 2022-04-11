@@ -429,7 +429,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                       ),
                                     ),
                                     SizedBox(height: 5.0,),
-                                    if(ignition == one)...[
+                                    if(ignition == one.toString())...[
                                       Text(
                                         "Online",
                                         textAlign: TextAlign.start,
@@ -539,7 +539,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                       ),
                                     ),
                                     SizedBox(height: 5.0,),
-                                    if(extBatt == one)...[
+                                    if(extBatt == one.toString())...[
                                       Text(
                                         "Attached",
                                         textAlign: TextAlign.start,

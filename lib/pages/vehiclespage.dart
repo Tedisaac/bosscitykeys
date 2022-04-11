@@ -1,5 +1,5 @@
-import 'dart:io';
-
+import 'dart:io' show Platform, exit;
+import 'package:flutter/services.dart';
 import 'package:bosscitykeys/constants/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:bosscitykeys/pages/detailspage.dart';
@@ -59,14 +59,16 @@ class _VehiclePageState extends State<VehiclePage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Vehicle Tracking'),
         backgroundColor: Colors.amber,
         actions: [
           new IconButton(
               onPressed: (){
-                clearData();
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => LoginPage())
+                //showDialogWidget(context);
+                clearData(context);
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               },
               icon: Icon(logout_rounded))
@@ -120,7 +122,7 @@ class _VehiclePageState extends State<VehiclePage> {
                                         ),
                                       ),
                                       Text(
-                                       snapshot.data![index].platenumber,
+                                        snapshot.data![index].platenumber,
                                         style: TextStyle(
                                             color: Colors.black38,
                                             fontSize: 18.0
@@ -165,9 +167,12 @@ class _VehiclePageState extends State<VehiclePage> {
       ),
     );
   }
+
+
 }
 
-void clearData() async{
+
+void clearData(BuildContext context) async{
   final preferences = await SharedPreferences.getInstance();
   await preferences.clear();
 }
@@ -182,5 +187,44 @@ Future<void> saveCarData(BuildContext context,var id,var model, var regNo,var ch
   Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => DetailsPage(),)
   );
+}
+showDialogWidget(BuildContext context){
+  AlertDialog alertDialog = AlertDialog(
+    title: Text("Logout"),
+    content: Text("Are you sure you want to logout?"),
+    actions: [
+      TextButton(onPressed: (){
+        Navigator.pop(context);
+      }, child: Text("Cancel"),
+        style: TextButton.styleFrom(
+            backgroundColor: Colors.amber,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            primary: Colors.white
+        ),),
+      TextButton(onPressed: (){
+        clearData(context);
+      }, child: Text("Logout"),
+        style: TextButton.styleFrom(
+            backgroundColor: Colors.amber,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            primary: Colors.white
+        ),),
+    ],
+  );
+  showDialog(context: context, builder: (BuildContext context){
+    return alertDialog;
+  });
+}
+onBackPressed(BuildContext context) {
+  if (Platform.isAndroid) {
+    SystemNavigator.pop();
+  } else if (Platform.isIOS) {
+    exit(0);
+  }
+
 }
 
