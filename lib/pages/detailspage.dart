@@ -1,6 +1,7 @@
 import 'package:bosscitykeys/constants/strings.dart';
 import 'package:bosscitykeys/models/latestrecordmodel.dart';
 import 'package:bosscitykeys/pages/mappage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,6 +60,8 @@ class _DetailsPageState extends State<DetailsPage> {
     super.initState();
     //getData();
   }
+  bool shadowColor = false;
+  double? scrolledUnderElevation;
   @override
   Widget build(BuildContext context) {
 
@@ -67,9 +70,22 @@ class _DetailsPageState extends State<DetailsPage> {
         title: Text(
           'Details'
         ),
+        scrolledUnderElevation: scrolledUnderElevation,
+        shadowColor: shadowColor ? Theme.of(context).colorScheme.shadow : null,
         backgroundColor: Colors.amber,
       ),
-      body: getBody()
+
+      body: getBody(),
+
+        floatingActionButton: FloatingActionButton.extended(onPressed: () {
+          //var latitude = '1.00' ;
+          //var longitude = '37.00';
+          // var longitude = snapshot.data?.longitude ?? '';
+          //saveLocation(context, latitude,longitude);
+
+        }, label: Text('Locate in Map'),
+          icon: const Icon(CupertinoIcons.location),
+          backgroundColor: Colors.amber,),
       );
   }
   Widget getBody(){
@@ -98,7 +114,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 child: Column(
                   children: <Widget>[
                     Container(
-                      height: 80,
+                      height: 100,
                       width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
                       child: Card(
@@ -148,7 +164,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                     Container(
-                      height: 80,
+                      height: 100,
                       width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
                       child: Card(
@@ -198,7 +214,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                     Container(
-                      height: 80,
+                      height: 100,
                       width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
                       child: Card(
@@ -248,7 +264,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                     Container(
-                      height: 80,
+                      height: 100,
                       width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
                       child: Card(
@@ -298,7 +314,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                     Container(
-                      height: 80,
+                      height: 100,
                       width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
                       child: Card(
@@ -348,7 +364,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                     Container(
-                      height: 80,
+                      height: 100,
                       width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
                       child: Card(
@@ -396,7 +412,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                     Container(
-                      height: 80,
+                      height: 100,
                       width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
                       child: Card(
@@ -457,7 +473,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                     Container(
-                      height: 80,
+                      height: 100,
                       width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
                       child: Card(
@@ -507,7 +523,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                     Container(
-                      height: 80,
+                      height: 100,
                       width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
                       child: Card(
@@ -587,11 +603,14 @@ class _DetailsPageState extends State<DetailsPage> {
                           primary: Colors.amber,
                         ),
                       ),
-                    )
+                    ),
+
                   ],
                 ),
               ),
+
             );
+
           }
         });
   }
