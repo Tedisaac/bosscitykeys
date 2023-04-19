@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:bosscitykeys/constants/strings.dart';
+import 'package:bosscitykeys/pages/Register.dart';
 import 'package:bosscitykeys/services/api_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:bosscitykeys/pages/vehiclespage.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -108,6 +110,7 @@ Widget buildPassword(TextEditingController _controllerPassword) {
 
 Widget buildLoginButton(
     BuildContext context,
+    bool _isLoading,
     TextEditingController _controllerEmail,
     TextEditingController _controllerPassword) {
   return Container(
@@ -115,11 +118,7 @@ Widget buildLoginButton(
     width: double.infinity,
     child: ElevatedButton(
       onPressed: () {
-        /* final API_MANAGER loginAPI = new API_MANAGER();
-        var email = _controllerEmail.text;
-        var password = _controllerPassword.text;
-        loginAPI.login(email, password, "test");*/
-        login(context, _controllerEmail, _controllerPassword);
+        login(context, _isLoading, _controllerEmail, _controllerPassword);
       },
       child: const Text('Sign in'),
       style: ElevatedButton.styleFrom(
@@ -134,6 +133,7 @@ Widget buildLoginButton(
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isLoading = false;
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
 
@@ -186,12 +186,111 @@ class _LoginPageState extends State<LoginPage> {
                       buildEmail(_controllerEmail),
                       const SizedBox(height: 20),
                       buildPassword(_controllerPassword),
-                      buildLoginButton(
-                          context, _controllerEmail, _controllerPassword),
+                      const SizedBox(height: 20),
+
+                      _isLoading
+                          ? const SpinKitChasingDots(
+                              color: Colors.white,
+                            ):
+                      //     : buildLoginButton(context, _isLoading,
+                      //         _controllerEmail, _controllerPassword),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 25),
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if(_controllerEmail.text.isNotEmpty&&_controllerPassword.text.isNotEmpty){
+
+                            setState(() {
+                              _isLoading= true;
+                            });
+                            login(context, _isLoading, _controllerEmail,
+                                _controllerPassword);
+                            } else{
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Fill in all details')));
+                            }
+
+                          },
+                          child: const Text('Sign in'),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            padding: const EdgeInsets.all(15),
+                            primary: Colors.amber,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin:
+                        const EdgeInsets.only(left: 16, right: 16, top: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const Register()));
+                                },
+                                child: const Icon(
+                                  CupertinoIcons.phone_arrow_down_left,
+                                  // color: Colors.white,
+                                  size: 30,
+                                )),
+                            InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const Register()));
+                                },
+                                child: const Text(
+                                  'Need a Tracker? Register. ',
+                                  style: TextStyle(
+                                    // color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ))
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
-              )
+              ),
+              // Align(
+              //     alignment: Alignment.bottomLeft,
+              //     child: Container(
+              //       margin:
+              //           const EdgeInsets.only(left: 16, right: 16, bottom: 20),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           InkWell(
+              //               onTap: () {
+              //                 Navigator.of(context).push(MaterialPageRoute(
+              //                     builder: (context) => const Register()));
+              //               },
+              //               child: const Icon(
+              //                 CupertinoIcons.phone_arrow_down_left,
+              //                 // color: Colors.white,
+              //                 size: 30,
+              //               )),
+              //           InkWell(
+              //               onTap: () {
+              //                 Navigator.of(context).push(MaterialPageRoute(
+              //                     builder: (context) => const Register()));
+              //               },
+              //               child: const Text(
+              //                 'Need a Tracker? Register. ',
+              //                 style: TextStyle(
+              //                   // color: Colors.white,
+              //                   fontSize: 18,
+              //                   fontWeight: FontWeight.bold,
+              //                 ),
+              //               ))
+              //         ],
+              //       ),
+              //     ))
             ],
           ),
         ),
@@ -200,7 +299,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-Future<void> login(BuildContext context, TextEditingController _controllerEmail,
+Future<void> login(
+    BuildContext context,
+    bool _isLoading,
+    TextEditingController _controllerEmail,
     TextEditingController _controllerPassword) async {
   if (_controllerEmail.text.isNotEmpty && _controllerPassword.text.isNotEmpty) {
     var deviceName = "test_device";
@@ -216,6 +318,7 @@ Future<void> login(BuildContext context, TextEditingController _controllerEmail,
 
     if (loginResponse.statusCode == 200) {
       debugPrint("LoginResp ${loginResponse.body}");
+      _isLoading = false;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const VehiclePage()),
       );
