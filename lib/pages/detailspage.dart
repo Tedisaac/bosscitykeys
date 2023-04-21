@@ -1,6 +1,7 @@
 import 'package:bosscitykeys/constants/strings.dart';
 import 'package:bosscitykeys/models/latestrecordmodel.dart';
 import 'package:bosscitykeys/pages/mappage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,6 +60,8 @@ class _DetailsPageState extends State<DetailsPage> {
     super.initState();
     //getData();
   }
+  bool shadowColor = false;
+  double? scrolledUnderElevation;
   @override
   Widget build(BuildContext context) {
 
@@ -67,9 +70,14 @@ class _DetailsPageState extends State<DetailsPage> {
         title: Text(
           'Details'
         ),
+        scrolledUnderElevation: scrolledUnderElevation,
+        shadowColor: shadowColor ? Theme.of(context).colorScheme.shadow : null,
         backgroundColor: Colors.amber,
       ),
-      body: getBody()
+
+      body: getBody(),
+
+
       );
   }
   Widget getBody(){
@@ -92,505 +100,522 @@ class _DetailsPageState extends State<DetailsPage> {
               child: CircularProgressIndicator(),
             );
           }else{
-            return SingleChildScrollView(
-              child: Container(
-                color: Colors.amberAccent,
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: 80,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
-                      child: Card(
-                        margin: EdgeInsets.only(top: 10.0),
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                child: Image.asset('assets/images/sedan.png'),
-                                width: 50,
-                                height: 30,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(left: 17.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      "Model",
-                                      style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.black
-                                      ),
+            return Stack(children:[
+            SingleChildScrollView(
+            child: Container(
+            color: Colors.amberAccent,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: 100,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
+                    child: Card(
+                      margin: EdgeInsets.only(top: 10.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              child: Image.asset('assets/images/sedan.png'),
+                              width: 50,
+                              height: 30,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 17.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "Model",
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black
                                     ),
-                                    SizedBox(height: 5.0,),
+                                  ),
+                                  SizedBox(height: 5.0,),
+                                  Text(
+                                    model,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey
+                                    ),),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 100,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
+                    child: Card(
+                      margin: EdgeInsets.only(top: 10.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              child: Image.asset('assets/images/plate.png'),
+                              width: 50,
+                              height: 30,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 17.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "Registration Number",
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black
+                                    ),
+                                  ),
+                                  SizedBox(height: 5.0,),
+                                  Text(
+                                    regNo,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey
+                                    ),),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 100,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
+                    child: Card(
+                      margin: EdgeInsets.only(top: 10.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              child: Image.asset('assets/images/barcode.png'),
+                              width: 50,
+                              height: 30,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 17.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "Chasis Number",
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black
+                                    ),
+                                  ),
+                                  SizedBox(height: 5.0,),
+                                  Text(
+                                    modelYear,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey
+                                    ),),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 100,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
+                    child: Card(
+                      margin: EdgeInsets.only(top: 10.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              child: Image.asset('assets/images/calendar.png'),
+                              width: 50,
+                              height: 30,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 17.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "Manufacture Year",
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black
+                                    ),
+                                  ),
+                                  SizedBox(height: 5.0,),
+                                  Text(
+                                    chasisNo,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey
+                                    ),),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 100,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
+                    child: Card(
+                      margin: EdgeInsets.only(top: 10.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              child: Image.asset('assets/images/time.png'),
+                              width: 50,
+                              height: 30,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 17.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "Date",
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black
+                                    ),
+                                  ),
+                                  SizedBox(height: 5.0,),
+                                  Text(
+                                    dateTime,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey
+                                    ),),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 100,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
+                    child: Card(
+                      margin: EdgeInsets.only(top: 10.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              child: Image.asset('assets/images/deadline.png'),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 17.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "Speed",
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black
+                                    ),
+                                  ),
+                                  SizedBox(height: 5.0,),
+                                  Text(
+                                    speedKm,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey
+                                    ),),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 100,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
+                    child: Card(
+                      margin: EdgeInsets.only(top: 10.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              child: Image.asset('assets/images/pow.png'),
+                              width: 50,
+                              height: 30,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 17.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "Status",
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black
+                                    ),
+                                  ),
+                                  SizedBox(height: 5.0,),
+                                  if(ignition == one.toString())...[
                                     Text(
-                                      model,
+                                      "Online",
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.grey
+                                          color: Colors.green
                                       ),),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 80,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
-                      child: Card(
-                        margin: EdgeInsets.only(top: 10.0),
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                child: Image.asset('assets/images/plate.png'),
-                                width: 50,
-                                height: 30,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(left: 17.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
+                                  ]else...[
                                     Text(
-                                      "Registration Number",
-                                      style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.black
-                                      ),
-                                    ),
-                                    SizedBox(height: 5.0,),
-                                    Text(
-                                      regNo,
+                                      "Offline",
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.grey
+                                          color: Colors.red
                                       ),),
-                                  ],
-                                ),
+                                  ]
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Container(
-                      height: 80,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
-                      child: Card(
-                        margin: EdgeInsets.only(top: 10.0),
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                child: Image.asset('assets/images/barcode.png'),
-                                width: 50,
-                                height: 30,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(left: 17.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      "Chasis Number",
-                                      style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.black
-                                      ),
+                  ),
+                  Container(
+                    height: 100,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
+                    child: Card(
+                      margin: EdgeInsets.only(top: 10.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              child: Image.asset('assets/images/voltage.png'),
+                              width: 50,
+                              height: 30,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 17.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    'Voltage',
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black
                                     ),
-                                    SizedBox(height: 5.0,),
+                                  ),
+                                  SizedBox(height: 5.0,),
+                                  Text(
+                                    voltage.toString(),
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey
+                                    ),),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 100,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
+                    child: Card(
+                      margin: EdgeInsets.only(top: 10.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              child: Image.asset('assets/images/lighting.png'),
+                              width: 50,
+                              height: 30,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 17.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "External Battery",
+                                    style: TextStyle(
+                                        fontSize: 20.0
+                                    ),
+                                  ),
+                                  SizedBox(height: 5.0,),
+                                  if(extBatt == one.toString())...[
                                     Text(
-                                      modelYear,
+                                      "Attached",
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.grey
+                                          color: Colors.green
                                       ),),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 80,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
-                      child: Card(
-                        margin: EdgeInsets.only(top: 10.0),
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                child: Image.asset('assets/images/calendar.png'),
-                                width: 50,
-                                height: 30,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(left: 17.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
+                                  ]else...[
                                     Text(
-                                      "Manufacture Year",
-                                      style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.black
-                                      ),
-                                    ),
-                                    SizedBox(height: 5.0,),
-                                    Text(
-                                      chasisNo,
+                                      "Dettached",
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.grey
+                                          color: Colors.red
                                       ),),
-                                  ],
-                                ),
+                                  ]
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Container(
-                      height: 80,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
-                      child: Card(
-                        margin: EdgeInsets.only(top: 10.0),
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                child: Image.asset('assets/images/time.png'),
-                                width: 50,
-                                height: 30,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(left: 17.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      "Date",
-                                      style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.black
-                                      ),
-                                    ),
-                                    SizedBox(height: 5.0,),
-                                    Text(
-                                      dateTime,
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey
-                                      ),),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 80,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
-                      child: Card(
-                        margin: EdgeInsets.only(top: 10.0),
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                child: Image.asset('assets/images/deadline.png'),
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(left: 17.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      "Speed",
-                                      style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.black
-                                      ),
-                                    ),
-                                    SizedBox(height: 5.0,),
-                                    Text(
-                                      speedKm,
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey
-                                      ),),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 80,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
-                      child: Card(
-                        margin: EdgeInsets.only(top: 10.0),
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                child: Image.asset('assets/images/pow.png'),
-                                width: 50,
-                                height: 30,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(left: 17.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      "Status",
-                                      style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.black
-                                      ),
-                                    ),
-                                    SizedBox(height: 5.0,),
-                                    if(ignition == one.toString())...[
-                                      Text(
-                                        "Online",
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.green
-                                        ),),
-                                    ]else...[
-                                      Text(
-                                        "Offline",
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.red
-                                        ),),
-                                    ]
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 80,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
-                      child: Card(
-                        margin: EdgeInsets.only(top: 10.0),
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                child: Image.asset('assets/images/voltage.png'),
-                                width: 50,
-                                height: 30,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(left: 17.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      'Voltage',
-                                      style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.black
-                                      ),
-                                    ),
-                                    SizedBox(height: 5.0,),
-                                    Text(
-                                      voltage.toString(),
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey
-                                      ),),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 80,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 0.0),
-                      child: Card(
-                        margin: EdgeInsets.only(top: 10.0),
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                child: Image.asset('assets/images/lighting.png'),
-                                width: 50,
-                                height: 30,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(left: 17.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      "External Battery",
-                                      style: TextStyle(
-                                          fontSize: 20.0
-                                      ),
-                                    ),
-                                    SizedBox(height: 5.0,),
-                                    if(extBatt == one.toString())...[
-                                      Text(
-                                        "Attached",
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.green
-                                        ),),
-                                    ]else...[
-                                      Text(
-                                        "Dettached",
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.red
-                                        ),),
-                                    ]
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 25.0,
-                      ),
-                      width: 300.0,
-                      child: ElevatedButton(
-                        onPressed: (){
-                          var latitude = snapshot.data?.latitude ?? '';
-                          var longitude = snapshot.data?.longitude ?? '';
-                          saveLocation(context, latitude,longitude);
+                  ),
+                  // Container(
+                  //   padding: EdgeInsets.symmetric(
+                  //     vertical: 25.0,
+                  //   ),
+                  //   width: 300.0,
+                  //   child: ElevatedButton(
+                  //     onPressed: (){
+                  //
+                  //       // saveLocation(context, latitude,longitude);
+                  //
+                  //     },
+                  //     child: Text("Locate in Map"),
+                  //     style: ElevatedButton.styleFrom(
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(15),
+                  //       ),
+                  //       padding: EdgeInsets.all(15),
+                  //       primary: Colors.amber,
+                  //     ),
+                  //   ),
+                  // ),
 
-                        },
-                        child: Text("Locate in Map"),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          padding: EdgeInsets.all(15),
-                          primary: Colors.amber,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                ],
               ),
+            ),
+
+          ),
+              Align( alignment: Alignment.bottomRight,child: Container(margin: EdgeInsets.only(bottom: 10, right: 16),child: FloatingActionButton.extended(onPressed: () {
+                // var latitude = '1.00' ;
+                // var longitude = '37.00';
+                var latitude = snapshot.data?.latitude ?? '';
+                var longitude = snapshot.data?.longitude ?? '';
+                saveLocation(context, latitude,longitude);
+
+              }, label: Text('Locate in Map'),
+                icon: const Icon(CupertinoIcons.location),
+                backgroundColor: Colors.amber,),
+
+              ))
+            ]
+
             );
           }
         });

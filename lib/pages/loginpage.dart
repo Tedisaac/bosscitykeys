@@ -1,14 +1,15 @@
 import 'dart:convert';
 import 'package:bosscitykeys/constants/strings.dart';
+import 'package:bosscitykeys/pages/Register.dart';
 import 'package:bosscitykeys/services/api_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:bosscitykeys/pages/vehiclespage.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -20,8 +21,8 @@ class LoginPage extends StatefulWidget {
 Widget buildEmail(TextEditingController _controllerEmail) {
   return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget> [
-        Text(
+      children: <Widget>[
+        const Text(
           'Email',
           style: TextStyle(
             color: Colors.white,
@@ -29,28 +30,24 @@ Widget buildEmail(TextEditingController _controllerEmail) {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(0,2)
-                )
-              ]
-          ),
+                    color: Colors.black26, blurRadius: 6, offset: Offset(0, 2))
+              ]),
           height: 60,
           child: TextField(
             controller: _controllerEmail,
             keyboardType: TextInputType.emailAddress,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black87,
             ),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.only(top: 14),
                 prefixIcon: Icon(
@@ -60,20 +57,17 @@ Widget buildEmail(TextEditingController _controllerEmail) {
                 hintText: 'Email',
                 hintStyle: TextStyle(
                   color: Colors.black38,
-                )
-            ),
+                )),
           ),
         )
-      ]
-  );
-
+      ]);
 }
 
 Widget buildPassword(TextEditingController _controllerPassword) {
   return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget> [
-        Text(
+      children: <Widget>[
+        const Text(
           'Password',
           style: TextStyle(
             color: Colors.white,
@@ -81,28 +75,24 @@ Widget buildPassword(TextEditingController _controllerPassword) {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(0,2)
-                )
-              ]
-          ),
+                    color: Colors.black26, blurRadius: 6, offset: Offset(0, 2))
+              ]),
           height: 60,
           child: TextField(
             controller: _controllerPassword,
             obscureText: true,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black87,
             ),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.only(top: 14),
                 prefixIcon: Icon(
@@ -112,46 +102,41 @@ Widget buildPassword(TextEditingController _controllerPassword) {
                 hintText: 'Password',
                 hintStyle: TextStyle(
                   color: Colors.black38,
-                )
-            ),
+                )),
           ),
         )
-      ]
-  );
-
+      ]);
 }
 
-Widget buildLoginButton(BuildContext context,TextEditingController _controllerEmail,TextEditingController _controllerPassword){
+Widget buildLoginButton(
+    BuildContext context,
+    bool _isLoading,
+    TextEditingController _controllerEmail,
+    TextEditingController _controllerPassword) {
   return Container(
-    padding: EdgeInsets.symmetric(
-        vertical: 25
-    ),
+    padding: const EdgeInsets.symmetric(vertical: 25),
     width: double.infinity,
     child: ElevatedButton(
-      onPressed: (){
-       /* final API_MANAGER loginAPI = new API_MANAGER();
-        var email = _controllerEmail.text;
-        var password = _controllerPassword.text;
-        loginAPI.login(email, password, "test");*/
-        login(context,_controllerEmail,_controllerPassword);
+      onPressed: () {
+        login(context, _isLoading, _controllerEmail, _controllerPassword);
       },
-      child: Text('Sign in'),
+      child: const Text('Sign in'),
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         primary: Colors.amber,
       ),
     ),
   );
 }
 
-
-
 class _LoginPageState extends State<LoginPage> {
+  bool _isLoading = false;
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
+
   //Future<TokenInfo>? _tokenInfo;
 
   @override
@@ -161,37 +146,35 @@ class _LoginPageState extends State<LoginPage> {
         value: SystemUiOverlayStyle.light,
         child: GestureDetector(
           child: Stack(
-            children: <Widget> [
+            children: <Widget>[
               Container(
                 height: double.infinity,
                 width: double.infinity,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Color(0xffffd202),
-                          Color(0xffffda31),
-                          Color(0xffffde48),
-                          Color(0xffffe25f),
-                        ]
-                    )
-                ),
+                      Color(0xffffd202),
+                      Color(0xffffda31),
+                      Color(0xffffde48),
+                      Color(0xffffe25f),
+                    ])),
                 child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 25,
                     vertical: 120,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget> [
+                    children: <Widget>[
                       Container(
                         child: Image.asset('assets/images/big.png'),
                         width: 170,
                         height: 80,
                       ),
-                      Text(
+                      const Text(
                         'Sign In',
                         style: TextStyle(
                           color: Colors.white,
@@ -199,49 +182,156 @@ class _LoginPageState extends State<LoginPage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       buildEmail(_controllerEmail),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       buildPassword(_controllerPassword),
-                      buildLoginButton(context,_controllerEmail,_controllerPassword),
+                      const SizedBox(height: 20),
+
+                      _isLoading
+                          ? const SpinKitChasingDots(
+                              color: Colors.white,
+                            ):
+                      //     : buildLoginButton(context, _isLoading,
+                      //         _controllerEmail, _controllerPassword),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 25),
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if(_controllerEmail.text.isNotEmpty&&_controllerPassword.text.isNotEmpty){
+
+                            setState(() {
+                              _isLoading= true;
+                            });
+                            login(context, _isLoading, _controllerEmail,
+                                _controllerPassword);
+                            } else{
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Fill in all details')));
+                            }
+
+                          },
+                          child: const Text('Sign in'),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            padding: const EdgeInsets.all(15),
+                            primary: Colors.amber,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin:
+                        const EdgeInsets.only(left: 16, right: 16, top: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const Register()));
+                                },
+                                child: const Icon(
+                                  CupertinoIcons.phone_arrow_down_left,
+                                  // color: Colors.white,
+                                  size: 30,
+                                )),
+                            InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const Register()));
+                                },
+                                child: const Text(
+                                  'Need a Tracker? Register. ',
+                                  style: TextStyle(
+                                    // color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ))
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
-              )
+              ),
+              // Align(
+              //     alignment: Alignment.bottomLeft,
+              //     child: Container(
+              //       margin:
+              //           const EdgeInsets.only(left: 16, right: 16, bottom: 20),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           InkWell(
+              //               onTap: () {
+              //                 Navigator.of(context).push(MaterialPageRoute(
+              //                     builder: (context) => const Register()));
+              //               },
+              //               child: const Icon(
+              //                 CupertinoIcons.phone_arrow_down_left,
+              //                 // color: Colors.white,
+              //                 size: 30,
+              //               )),
+              //           InkWell(
+              //               onTap: () {
+              //                 Navigator.of(context).push(MaterialPageRoute(
+              //                     builder: (context) => const Register()));
+              //               },
+              //               child: const Text(
+              //                 'Need a Tracker? Register. ',
+              //                 style: TextStyle(
+              //                   // color: Colors.white,
+              //                   fontSize: 18,
+              //                   fontWeight: FontWeight.bold,
+              //                 ),
+              //               ))
+              //         ],
+              //       ),
+              //     ))
             ],
           ),
         ),
       ),
     );
   }
-
 }
-Future<void> login(BuildContext context,TextEditingController _controllerEmail,TextEditingController _controllerPassword) async{
-  if(_controllerEmail.text.isNotEmpty && _controllerPassword.text.isNotEmpty){
+
+Future<void> login(
+    BuildContext context,
+    bool _isLoading,
+    TextEditingController _controllerEmail,
+    TextEditingController _controllerPassword) async {
+  if (_controllerEmail.text.isNotEmpty && _controllerPassword.text.isNotEmpty) {
     var deviceName = "test_device";
     var client = http.Client();
     var loginResponse = await client.post(
       Uri.parse(Strings.login_url),
       body: ({
-        'email' : _controllerEmail.text,
-        'password' : _controllerPassword.text,
-        'device_name' : deviceName,
+        'email': _controllerEmail.text,
+        'password': _controllerPassword.text,
+        'device_name': deviceName,
       }),
     );
 
-
-    if(loginResponse.statusCode == 200){
+    if (loginResponse.statusCode == 200) {
+      debugPrint("LoginResp ${loginResponse.body}");
+      _isLoading = false;
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => VehiclePage()),);
+        MaterialPageRoute(builder: (context) => const VehiclePage()),
+      );
       var token = loginResponse.body;
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
-    }else{
+    } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Invalid credentials")));
+          .showSnackBar(const SnackBar(content: Text("Invalid credentials")));
     }
-  }else{
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Please fill in all fields"),));
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Please fill in all fields"),
+    ));
   }
 }

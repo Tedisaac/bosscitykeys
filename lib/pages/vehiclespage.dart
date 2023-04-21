@@ -1,4 +1,5 @@
 import 'dart:io' show Platform, exit;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:bosscitykeys/constants/strings.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class _VehiclePageState extends State<VehiclePage> {
     }else{
       return data;
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Please Check Your Internet Connection!")));
+          .showSnackBar(const SnackBar(content: Text("Please Check Your Internet Connection!")));
     }
 
 
@@ -60,18 +61,42 @@ class _VehiclePageState extends State<VehiclePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Vehicle Tracking'),
+        title: const Text('Vehicle Tracking'),
         backgroundColor: Colors.amber,
         actions: [
-          new IconButton(
+          IconButton(
               onPressed: (){
                 //showDialogWidget(context);
                 clearData(context);
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
+                showDialog<void>(context: context, builder: (BuildContext context){
+                  return AlertDialog(
+
+                    content: Container(
+                      height: MediaQuery.of(context).size.height*0.2,
+                      width: MediaQuery.of(context).size.width*0.2,
+                      child: Column(mainAxisAlignment:  MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CircleAvatar(backgroundColor: Colors.amber,child:Icon(CupertinoIcons.exclamationmark, color: Colors.red,)),
+                          Text('Do you want to Logout?'),
+                          SizedBox(height: 10,),
+                          OutlinedButton(onPressed: (){
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => const LoginPage()),
+                            );
+
+                          }, child: Text('OK'))
+
+                        ],
+                      ),
+                    ),
+
+                  );
+
+                });
+
               },
-              icon: Icon(logout_rounded))
+              icon: const Icon(logout_rounded))
         ],
       ),
       body: Container(
@@ -81,7 +106,7 @@ class _VehiclePageState extends State<VehiclePage> {
           builder: (context, AsyncSnapshot<List<Data>> snapshot){
             if(snapshot == null){
               return Container(
-                child: Center(
+                child: const Center(
                   child: CircularProgressIndicator(),
                 ),
               );
@@ -92,7 +117,7 @@ class _VehiclePageState extends State<VehiclePage> {
                   itemBuilder: (context,index) {
                     return Container(
                       width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 5.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 5.0),
                       child: Card(
                         elevation: 2.0,
                         shape: RoundedRectangleBorder(
@@ -100,7 +125,7 @@ class _VehiclePageState extends State<VehiclePage> {
                         ),
                         child: Container(
                           width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -113,19 +138,19 @@ class _VehiclePageState extends State<VehiclePage> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Text(
+                                      Container(width: MediaQuery.of(context).size.width*0.5,child: Text(
                                         snapshot.data![index].model.toString(),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 25.0
+                                            fontSize: 20.0
                                         ),
-                                      ),
+                                      )),
                                       Text(
                                         snapshot.data![index].platenumber,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.black38,
-                                            fontSize: 18.0
+                                            fontSize: 16.0
                                         ),
                                       )
                                     ],
@@ -134,7 +159,7 @@ class _VehiclePageState extends State<VehiclePage> {
                               ),
                               Container(
                                 alignment: Alignment.center,
-                                padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
                                 child: TextButton(
                                   onPressed: () {
                                     var id = snapshot.data![index].id.toString();
@@ -145,7 +170,7 @@ class _VehiclePageState extends State<VehiclePage> {
                                     saveCarData(context, id,model,regNo,year,chasisNo);
 
                                   },
-                                  child: Text('Details'),
+                                  child: const Text('Details'),
                                   style: TextButton.styleFrom(
                                       backgroundColor: Colors.amber,
                                       shape: RoundedRectangleBorder(
@@ -185,17 +210,17 @@ Future<void> saveCarData(BuildContext context,var id,var model, var regNo,var ch
   await prefs.setString('year', year);
   await prefs.setString('chasis_no', chasisNo);
   Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => DetailsPage(),)
+      MaterialPageRoute(builder: (context) => const DetailsPage(),)
   );
 }
 showDialogWidget(BuildContext context){
   AlertDialog alertDialog = AlertDialog(
-    title: Text("Logout"),
-    content: Text("Are you sure you want to logout?"),
+    title: const Text("Logout"),
+    content: const Text("Are you sure you want to logout?"),
     actions: [
       TextButton(onPressed: (){
         Navigator.pop(context);
-      }, child: Text("Cancel"),
+      }, child: const Text("Cancel"),
         style: TextButton.styleFrom(
             backgroundColor: Colors.amber,
             shape: RoundedRectangleBorder(
@@ -205,7 +230,7 @@ showDialogWidget(BuildContext context){
         ),),
       TextButton(onPressed: (){
         clearData(context);
-      }, child: Text("Logout"),
+      }, child: const Text("Logout"),
         style: TextButton.styleFrom(
             backgroundColor: Colors.amber,
             shape: RoundedRectangleBorder(
