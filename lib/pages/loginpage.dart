@@ -223,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Container(
                         margin:
-                        const EdgeInsets.only(left: 16, right: 16, top: 20),
+                        const EdgeInsets.only(left: 16, right: 16, top: 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
