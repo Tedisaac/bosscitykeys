@@ -38,8 +38,8 @@ class Data {
 
   int id;
   String ignition;
-  String latitude;
-  String longitude;
+  double latitude;
+  double longitude;
   String speed;
   String voltage;
   dynamic timestamp;

@@ -18,7 +18,6 @@ class API_MANAGER {
 
     if(loginResponse.statusCode == 200){
       var jsonString = loginResponse.body;
-      print(jsonString);
     }
   }
 }

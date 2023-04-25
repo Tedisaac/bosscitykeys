@@ -28,8 +28,8 @@ class Data {
   });
   late final int id;
   late final Null ignition;
-  late final String latitude;
-  late final String longitude;
+  late final double latitude;
+  late final double longitude;
   late final Null speed;
   late final Null voltage;
   late final Null timestamp;

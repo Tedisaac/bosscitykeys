@@ -271,7 +271,6 @@ Future<void> register(BuildContext context,
       }),
     );
 
-    print(registerResponse.body);
     if (registerResponse.statusCode == 200) {
       _isLoading = false;
       debugPrint("LoginResp ${registerResponse.body}");

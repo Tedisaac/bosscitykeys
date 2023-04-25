@@ -35,12 +35,10 @@ class _VehiclePageState extends State<VehiclePage> {
     );
     var vehiclesData = cnv.jsonDecode(vehiclesResponse.body);
     var details = vehiclesData['data'];
-    print(details);
     if(vehiclesResponse.statusCode == 200){
       for(Map<String,dynamic> i in details){
         data.add(Data.fromJson(i));
       }
-      print(data);
       return data;
     }else{
       return data;

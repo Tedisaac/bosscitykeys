@@ -5,6 +5,7 @@ import 'package:bosscitykeys/models/playbackrecordsmodel.dart';
 import 'package:bosscitykeys/models/latlongmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -20,18 +21,14 @@ class PlayBack extends StatefulWidget {
 }
 
 class _PlayBackState extends State<PlayBack> {
-  double lat = 1.2921;
-  double long = 36.8219;
-  double lat2 = 1.2675;
-  double long2 = 36.8120;
   Completer<GoogleMapController> _googleMapController = Completer();
-  LatLng _center = LatLng(1.2921, 36.8219);
+  late LatLng _center;
   Set<Marker> _marker = {};
   Set<Polyline> _polyline = {};
   List<LatLng> latlngSegment1 = [];
   static LatLng _lat1 = LatLng(1.2921, 36.8219);
   static LatLng _lat2 = LatLng(1.2675, 36.8120);
-  LatLng _lastMapPosition = LatLng(1.2921, 36.8219);
+  late LatLng _lastMapPosition;
   MapType _currentMapType = MapType.normal;
   late BitmapDescriptor mapMarker;
   late BitmapDescriptor mapMarker1;
@@ -63,22 +60,21 @@ class _PlayBackState extends State<PlayBack> {
     _lastMapPosition = _center;
   }
 
-  var data;
-  late Data playBackrecords;
-  late List<LatLng> list;
+  var latLongData;
+  late Playbackrecordsmodel playBackrecords;
+  List<LatLng> list = <LatLng>[];
 
-  Future<Playbackrecordsmodel> getData() async {
+  Future<Playbackrecordsmodel> getPlayBackData() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
     var carId = prefs.getString('id');
     var startDate = prefs.getString('start_date');
+    print(startDate);
     var newUrl = Strings.cars_list + "/$carId/records";
+    print(newUrl);
     var client = http.Client();
-    var detailsResponse = await client.post(
+    var detailsResponse = await client.get(
       Uri.parse(newUrl),
-      body: ({
-        'start_date': startDate,
-      }),
       headers: ({
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -86,15 +82,49 @@ class _PlayBackState extends State<PlayBack> {
       }),
     );
     var playbackData = cnv.jsonDecode(detailsResponse.body);
-    data = playbackData['data'];
-    playBackrecords = Data.fromJson(data);
+    playBackrecords = Playbackrecordsmodel.fromJson(playbackData);
     if (detailsResponse.statusCode == 200) {
       print(playBackrecords);
-      return data;
+      _center = LatLng(playBackrecords.data[0].latitude, playBackrecords.data[0].longitude);
+      return playBackrecords;
     } else {
-      print(playBackrecords);
-      return data;
+      return playBackrecords;
     }
+  }
+
+  _onMapCreated(GoogleMapController controller) {
+    _googleMapController.complete(controller);
+    setState(() {
+      if(list.isNotEmpty){
+        for(var j = 0; j < list.length; j++){
+          if(j == 0){
+            _marker.add(
+              Marker(
+                markerId: MarkerId('$j'),
+                position: LatLng(list[j].latitude, list[j].longitude),
+                icon: mapMarker,
+              ),
+            );
+          }else{
+            _marker.add(
+              Marker(
+                markerId: MarkerId('$j'),
+                position: LatLng(list[j].latitude, list[j].longitude),
+                icon: mapMarker1,
+              ),
+            );
+          }
+        }
+        latlngSegment1 = list;
+        _polyline.add(Polyline(
+          polylineId: PolylineId('line1'),
+          visible: true,
+          points: latlngSegment1,
+          width: 2,
+          color: Colors.amber,
+        ));
+      }
+    });
   }
 
   @override
@@ -103,8 +133,6 @@ class _PlayBackState extends State<PlayBack> {
     super.initState();
     setCustomMarker();
     setCustomMarker1();
-    latlngSegment1.add(_lat1);
-    latlngSegment1.add(_lat2);
   }
 
 
@@ -117,44 +145,12 @@ class _PlayBackState extends State<PlayBack> {
         backgroundColor: Colors.amber,
       ),
       body: FutureBuilder(
-        future: getData(),
+        future: getPlayBackData(),
         builder: (context,AsyncSnapshot<Playbackrecordsmodel> snapshot){
-          _onMapCreated(GoogleMapController controller) {
-            _googleMapController.complete(controller);
-            for(var i = 0; i <= snapshot.data!.data.length; i++){
-              list.add(LatLng(double.parse(snapshot.data!.data[i].latitude), double.parse(snapshot.data!.data[i].longitude)));
+          if(snapshot.data != null){
+            for(var i = 0; i < snapshot.data!.data.length; i++){
+              list.add(LatLng(snapshot.data!.data[i].latitude, snapshot.data!.data[i].longitude));
             }
-            setState(() {
-              if(list != null){
-                for(var j = 0; j <= list.length; j++){
-                  if(j == 1){
-                    _marker.add(
-                      Marker(
-                        markerId: MarkerId('$j'),
-                        position: LatLng(double.parse(snapshot.data!.data[j].latitude), double.parse(snapshot.data!.data[j].longitude)),
-                        icon: mapMarker,
-                      ),
-                    );
-                  }else{
-                    _marker.add(
-                      Marker(
-                        markerId: MarkerId('$j'),
-                        position: LatLng(double.parse(snapshot.data!.data[j].latitude), double.parse(snapshot.data!.data[j].longitude)),
-                        icon: mapMarker1,
-                      ),
-                    );
-                  }
-
-                }
-                _polyline.add(Polyline(
-                  polylineId: PolylineId('line1'),
-                  visible: true,
-                  points: list,
-                  width: 2,
-                  color: Colors.amber,
-                ));
-              }
-            });
           }
           return  GoogleMap(
             onMapCreated: _onMapCreated,

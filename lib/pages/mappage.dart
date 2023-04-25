@@ -30,12 +30,10 @@ class _MapPageState extends State<MapPage> {
   late Uint8List markerIcon;
   getLocation() async{
     final prefs = await SharedPreferences.getInstance();
-    var latitude = prefs.getString('latitude');
-    var longitude = prefs.getString('longitude');
-    lat = double.parse(latitude!);
-    long = double.parse(longitude!);
-    print(latitude);
-    print(longitude);
+    var latitude = prefs.getDouble('latitude');
+    var longitude = prefs.getDouble('longitude');
+    lat = latitude!;
+    long = longitude!;
     setState(() {
       _center = LatLng(lat, long);
       _lastMapPosition = _center;
@@ -188,7 +186,6 @@ showPlayBackDialog(
         startingDayOfWeek: StartingDayOfWeek.monday,
         onDaySelected: (date, events, _) {
           selectedDate = date;
-          print(selectedDate);
         },
         builders: CalendarBuilders(
           selectedDayBuilder: (context, date, events) => Container(
@@ -232,7 +229,6 @@ showPlayBackDialog(
               }else{
                 formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
               }
-              print(formattedDate);
               final prefs = await SharedPreferences.getInstance();
               await prefs.setString('start_date', formattedDate.toString());
                Navigator.of(context).push(

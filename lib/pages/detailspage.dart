@@ -30,7 +30,6 @@ class _DetailsPageState extends State<DetailsPage> {
     var token = prefs.getString('token');
     var carId = prefs.getString('id');
     model = prefs.getString('model') ?? '';
-    print("carId is" + carId!);
     regNo = prefs.getString('reg_no') ?? '';
     chasisNo = prefs.getString('chasis_no') ?? '';
     modelYear = prefs.getString('year') ?? '';
@@ -45,14 +44,11 @@ class _DetailsPageState extends State<DetailsPage> {
         }));
     var detailsData = cnv.jsonDecode(detailsResponse.body);
     data = detailsData['data'];
-    print(detailsData);
     latestRecord = Data.fromJson(data);
-    AppLog.e(latestRecord.longitude, tag: "response body");
+    AppLog.e(latestRecord.longitude.toString(), tag: "response body");
     if(detailsResponse.statusCode == 200){
-      print(latestRecord);
       return latestRecord;
     }else{
-      print(latestRecord);
       return latestRecord;
     }
   }
@@ -587,8 +583,6 @@ class _DetailsPageState extends State<DetailsPage> {
                   // var longitude = '37.00';
                   var latitude = snapshot.data?.latitude ?? '';
                   var longitude = snapshot.data?.longitude ?? '';
-                  print(latitude);
-                  print(longitude);
                   saveLocation(context, latitude,longitude);
 
                 }, label: Text('Locate in Map'),
@@ -610,8 +604,8 @@ class _DetailsPageState extends State<DetailsPage> {
 Future<void> saveLocation(BuildContext context, var latitude, var longitude) async{
 
   final prefs = await SharedPreferences.getInstance();
-  await prefs.setString('latitude', latitude);
-  await prefs.setString('longitude', longitude);
+  await prefs.setDouble('latitude', latitude);
+  await prefs.setDouble('longitude', longitude);
   Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => MapPage())
   );
