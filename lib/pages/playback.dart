@@ -71,7 +71,7 @@ class _PlayBackState extends State<PlayBack> {
     var carId = prefs.getString(Strings.id);
     var startDate = prefs.getString(Strings.startDate);
     print(startDate);
-    var newUrl = Strings.cars_list + "/$carId/records";
+    var newUrl = Strings.cars_list + "/$carId/records?start_date=$startDate";
     print(newUrl);
     var client = http.Client();
     var detailsResponse = await client.get(
