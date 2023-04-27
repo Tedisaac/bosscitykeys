@@ -8,8 +8,13 @@ class Strings{
   //Prefs Constants
   static String token = "token";
   static String isLoggedIn = "is_logged_in";
-
-
-
+  static String id = "id";
+  static String model = "model";
+  static String regNo = "reg_no";
+  static String year = "year";
+  static String chasisNo = "chasis_no";
+  static String startDate = "start_date";
+  static String latitude = "latitude";
+  static String longitude = "longitude";
 
 }

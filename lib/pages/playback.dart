@@ -27,8 +27,8 @@ class _PlayBackState extends State<PlayBack> {
   Set<Marker> _marker = {};
   Set<Polyline> _polyline = {};
   List<LatLng> latlngSegment1 = [];
-  static LatLng _lat1 = LatLng(1.2921, 36.8219);
-  static LatLng _lat2 = LatLng(1.2675, 36.8120);
+  static LatLng _lat1 = const LatLng(1.2921, 36.8219);
+  static LatLng _lat2 = const LatLng(1.2675, 36.8120);
   late LatLng _lastMapPosition;
   MapType _currentMapType = MapType.normal;
   late BitmapDescriptor mapMarker;
@@ -68,8 +68,8 @@ class _PlayBackState extends State<PlayBack> {
   Future<Playbackrecordsmodel> getPlayBackData() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString(Strings.token);
-    var carId = prefs.getString('id');
-    var startDate = prefs.getString('start_date');
+    var carId = prefs.getString(Strings.id);
+    var startDate = prefs.getString(Strings.startDate);
     print(startDate);
     var newUrl = Strings.cars_list + "/$carId/records";
     print(newUrl);
@@ -118,7 +118,7 @@ class _PlayBackState extends State<PlayBack> {
         }
         latlngSegment1 = list;
         _polyline.add(Polyline(
-          polylineId: PolylineId('line1'),
+          polylineId: const PolylineId('line1'),
           visible: true,
           points: latlngSegment1,
           width: 2,
@@ -126,6 +126,25 @@ class _PlayBackState extends State<PlayBack> {
         ));
       }
     });
+  }
+
+  _onMapTypePressed(){
+    setState(() {
+      _currentMapType = _currentMapType == MapType.normal ? MapType.satellite : MapType.normal;
+    });
+  }
+
+  Widget button(VoidCallback func,IconData iconData){
+    return Container(
+      height: 40.0,
+      width: 40.0,
+      child: FloatingActionButton(
+        onPressed: func,
+        materialTapTargetSize: MaterialTapTargetSize.padded,
+        backgroundColor: Colors.amberAccent,
+        child: Icon(iconData,size: 25.0,),
+      ),
+    );
   }
 
   @override
@@ -142,7 +161,7 @@ class _PlayBackState extends State<PlayBack> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Playback"),
+        title: const Text("Playback"),
         backgroundColor: Colors.amber,
       ),
       body: Container(
@@ -154,16 +173,38 @@ class _PlayBackState extends State<PlayBack> {
               for(var i = 0; i < snapshot.data!.data.length; i++){
                 list.add(LatLng(snapshot.data!.data[i].latitude, snapshot.data!.data[i].longitude));
               }
-              return  GoogleMap(
-                onMapCreated: _onMapCreated,
-                initialCameraPosition: CameraPosition(target: _center, zoom: 14.0),
-                mapType: _currentMapType,
-                markers: _marker,
-                polylines: _polyline,
-                onCameraMove: _onCameraMove,
+              return  Stack(
+                children: <Widget>[
+                  Positioned.fill(
+                    child: GoogleMap(
+                      onMapCreated: _onMapCreated,
+                      initialCameraPosition: CameraPosition(target: _center, zoom: 14.0),
+                      mapType: _currentMapType,
+                      markers: _marker,
+                      polylines: _polyline,
+                      onCameraMove: _onCameraMove,
+                    )
+                  ),
+                  Positioned(
+                    top: 20,
+                    left: 0,
+                    right: 10,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Column(
+                        children: <Widget>[
+
+                          button(_onMapTypePressed, Icons.map),
+                          const SizedBox(height: 20.0,),
+                          //button(_vehiclePower, Icons.power)
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               );
             } else {
-              return SpinKitCircle(
+              return const SpinKitCircle(
                   color: Colors.white
               );
             }

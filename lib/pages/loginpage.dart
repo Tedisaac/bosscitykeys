@@ -213,7 +213,7 @@ class _LoginPageState extends State<LoginPage> {
                                       login(context, _isLoading, _controllerEmail,
                                           _controllerPassword);
                                     } else{
-                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Fill in all details')));
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Fill in all details')));
                                     }
 
                                   },
@@ -304,7 +304,7 @@ class _LoginPageState extends State<LoginPage> {
             );
           }
           else{
-            return VehiclePage();
+            return const VehiclePage();
           }
     });
   }

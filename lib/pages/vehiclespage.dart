@@ -79,14 +79,14 @@ class _VehiclePageState extends State<VehiclePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              CircleAvatar(
+                              const CircleAvatar(
                                   backgroundColor: Colors.amber,
                                   child: Icon(
                                     CupertinoIcons.exclamationmark,
                                     color: Colors.red,
                                   )),
-                              Text('Do you want to Logout?'),
-                              SizedBox(
+                              const Text('Do you want to Logout?'),
+                              const SizedBox(
                                 height: 10,
                               ),
                               OutlinedButton(
@@ -94,7 +94,7 @@ class _VehiclePageState extends State<VehiclePage> {
                                     clearData(context);
                                     logout(context);
                                   },
-                                  child: Text('OK'))
+                                  child: const Text('OK'))
                             ],
                           ),
                         ),
@@ -110,11 +110,10 @@ class _VehiclePageState extends State<VehiclePage> {
           future: getVehicleData(),
           builder: (context, AsyncSnapshot<List<Data>> snapshot) {
             if (snapshot.data == null) {
-              return SpinKitCircle(color: Colors.white);
+              return const SpinKitCircle(color: Colors.white);
             } else {
               return ListView.builder(
                   itemCount: snapshot.data!.length,
-                  //shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return Container(
                       width: MediaQuery.of(context).size.width,
@@ -228,11 +227,11 @@ void clearData(BuildContext context) async {
 Future<void> saveCarData(BuildContext context, var id, var model, var regNo,
     var chasisNo, var year) async {
   final prefs = await SharedPreferences.getInstance();
-  await prefs.setString('id', id);
-  await prefs.setString('model', model);
-  await prefs.setString('reg_no', regNo);
-  await prefs.setString('year', year);
-  await prefs.setString('chasis_no', chasisNo);
+  await prefs.setString(Strings.id, id);
+  await prefs.setString(Strings.model, model);
+  await prefs.setString(Strings.regNo, regNo);
+  await prefs.setString(Strings.year, year);
+  await prefs.setString(Strings.chasisNo, chasisNo);
   Navigator.of(context).push(MaterialPageRoute(
     builder: (context) => const DetailsPage(),
   ));

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:async';
+import 'package:bosscitykeys/constants/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,16 +24,16 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   var lat,long;
   Completer<GoogleMapController> _googleMapController = Completer();
-  LatLng _center = LatLng(0.0, 0.0);
+  LatLng _center = const LatLng(0.0, 0.0);
   Set<Marker> _marker = {};
-  LatLng _lastMapPosition = LatLng(0.0, 0.0);
+  LatLng _lastMapPosition = const LatLng(0.0, 0.0);
   MapType _currentMapType = MapType.normal;
   late BitmapDescriptor mapMarker;
   late Uint8List markerIcon;
   Future<LatLng> getLocation() async{
     final prefs = await SharedPreferences.getInstance();
-    var latitude = prefs.getDouble('latitude');
-    var longitude = prefs.getDouble('longitude');
+    var latitude = prefs.getDouble(Strings.latitude);
+    var longitude = prefs.getDouble(Strings.longitude);
     lat = latitude!;
     long = longitude!;
 
@@ -68,7 +69,7 @@ class _MapPageState extends State<MapPage> {
     setState(() {
       _marker.add(
         Marker(
-          markerId: MarkerId('id-1'),
+          markerId: const MarkerId('id-1'),
           position: LatLng(lat,long),
           icon: mapMarker,
         ),
@@ -113,21 +114,21 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.amberAccent,
-      child: FutureBuilder(
-          future: getLocation(),
-          builder: (context, AsyncSnapshot<LatLng> snashot){
-            if(snashot.data != null){
-              return Scaffold(
-                  appBar: AppBar(
-                    title: Text('Map'),
-                    backgroundColor: Colors.amber,
-                    actions: [
-                      showPlayBackIcon(_calendarController),
-                    ],
-                  ),
-                  body: Stack(
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Map'),
+          backgroundColor: Colors.amber,
+          actions: [
+            showPlayBackIcon(_calendarController),
+          ],
+        ),
+        body: Container(
+          color: Colors.amberAccent,
+          child: FutureBuilder(
+              future: getLocation(),
+              builder: (context, AsyncSnapshot<LatLng> snashot){
+                if(snashot.data != null){
+                  return Stack(
                     children: <Widget>[
                       Positioned.fill(
                         child:  GoogleMap(
@@ -151,21 +152,21 @@ class _MapPageState extends State<MapPage> {
                             children: <Widget>[
 
                               button(_onMapTypePressed, Icons.map),
-                              SizedBox(height: 20.0,),
+                              const SizedBox(height: 20.0,),
                               //button(_vehiclePower, Icons.power)
                             ],
                           ),
                         ),
                       ),
                     ],
-                  )
-              );
-            }else {
-              return SpinKitCircle(
-                  color: Colors.white
-              );
-            }
-          }),
+                  );
+                }else {
+                  return const SpinKitCircle(
+                      color: Colors.white
+                  );
+                }
+              }),
+        )
     );
   }
 }
@@ -174,7 +175,7 @@ showPlayBackDialog(
   int _value = 1;
   var selectedDate;
   AlertDialog dialog = AlertDialog(
-    title: Text("Choose Playback Day"),
+    title: const Text("Choose Playback Day"),
     content: Container(
       width: MediaQuery.of(context).size.width - 30,
       padding: const EdgeInsets.all(10.0),
@@ -182,7 +183,7 @@ showPlayBackDialog(
           borderRadius: BorderRadius.circular(15.0), color: Colors.white),
       child: TableCalendar(
         initialCalendarFormat: CalendarFormat.month,
-        calendarStyle: CalendarStyle(
+        calendarStyle: const CalendarStyle(
             todayColor: Colors.amberAccent,
             selectedColor: Colors.amber,
             todayStyle: TextStyle(
@@ -194,7 +195,7 @@ showPlayBackDialog(
             formatButtonDecoration: BoxDecoration(
                 color: Colors.amberAccent,
                 borderRadius: BorderRadius.circular(20.0)),
-            formatButtonTextStyle: TextStyle(color: Colors.white),
+            formatButtonTextStyle: const TextStyle(color: Colors.white),
             formatButtonShowsNext: false),
         startingDayOfWeek: StartingDayOfWeek.monday,
         onDaySelected: (date, events, _) {
@@ -209,7 +210,7 @@ showPlayBackDialog(
                 borderRadius: BorderRadius.circular(8.0)),
             child: Text(
               date.day.toString(),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
           todayDayBuilder: (context, date, events) => Container(
@@ -220,7 +221,7 @@ showPlayBackDialog(
                 borderRadius: BorderRadius.circular(8.0)),
             child: Text(
               date.day.toString(),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ),
@@ -230,7 +231,7 @@ showPlayBackDialog(
     actions: [
       Row(
         children: [
-          SizedBox(
+          const SizedBox(
             width: 10.0,
           ),
           TextButton(
@@ -243,12 +244,12 @@ showPlayBackDialog(
                 formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
               }
               final prefs = await SharedPreferences.getInstance();
-              await prefs.setString('start_date', formattedDate.toString());
+              await prefs.setString(Strings.startDate, formattedDate.toString());
                Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => PlayBack())
+                MaterialPageRoute(builder: (context) => const PlayBack())
             ).then((result) => Navigator.pop(context));
             },
-            child: Text("Show"),
+            child: const Text("Show"),
             style: TextButton.styleFrom(
                 backgroundColor: Colors.amber,
                 shape: RoundedRectangleBorder(
@@ -256,14 +257,14 @@ showPlayBackDialog(
                 ),
                 primary: Colors.white),
           ),
-          SizedBox(
+          const SizedBox(
             width: 30.0,
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text("Cancel"),
+            child: const Text("Cancel"),
             style: TextButton.styleFrom(
                 backgroundColor: Colors.amber,
                 shape: RoundedRectangleBorder(
