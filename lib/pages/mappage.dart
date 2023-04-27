@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,17 +29,20 @@ class _MapPageState extends State<MapPage> {
   MapType _currentMapType = MapType.normal;
   late BitmapDescriptor mapMarker;
   late Uint8List markerIcon;
-  getLocation() async{
+  Future<LatLng> getLocation() async{
     final prefs = await SharedPreferences.getInstance();
     var latitude = prefs.getDouble('latitude');
     var longitude = prefs.getDouble('longitude');
     lat = latitude!;
     long = longitude!;
+
+    LatLng latLng = LatLng(lat, long);
     setState(() {
       _center = LatLng(lat, long);
       _lastMapPosition = _center;
     });
 
+    return latLng;
   }
 
   late CalendarController _calendarController;
@@ -48,7 +52,6 @@ class _MapPageState extends State<MapPage> {
     super.initState();
     _calendarController = CalendarController();
     setCustomMarker();
-    getLocation();
   }
   Future<Uint8List?> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -80,9 +83,6 @@ class _MapPageState extends State<MapPage> {
       _currentMapType = _currentMapType == MapType.normal ? MapType.satellite : MapType.normal;
     });
   }
-  _vehiclePower(){
-
-  }
 
   Widget button(VoidCallback func,IconData iconData){
     return Container(
@@ -104,7 +104,7 @@ class _MapPageState extends State<MapPage> {
         },
         icon: Image.asset(
           'assets/images/playback.png',
-          color: Colors.white,
+          color: Colors.black,
           width: 20.0,
           height: 20.0,
         ));
@@ -113,46 +113,59 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('Map'),
-          backgroundColor: Colors.amber,
-          actions: [
-            showPlayBackIcon(_calendarController),
-          ],
-        ),
-        body: Stack(
-    children: <Widget>[
-    Positioned.fill(
-      child:  GoogleMap(
-      onMapCreated: _onMapCreated,
-      initialCameraPosition: CameraPosition(
-          target: LatLng(lat,long),
-          zoom: 18.0
-      ),
-      mapType: _currentMapType,
-      markers: _marker,
-      onCameraMove: _onCameraMove,
-    ),
-    ),
-    Positioned(
-      top: 20,
-      left: 0,
-      right: 10,
-      child: Align(
-      alignment: Alignment.topRight,
-      child: Column(
-      children: <Widget>[
+    return Container(
+      color: Colors.amberAccent,
+      child: FutureBuilder(
+          future: getLocation(),
+          builder: (context, AsyncSnapshot<LatLng> snashot){
+            if(snashot.data != null){
+              return Scaffold(
+                  appBar: AppBar(
+                    title: Text('Map'),
+                    backgroundColor: Colors.amber,
+                    actions: [
+                      showPlayBackIcon(_calendarController),
+                    ],
+                  ),
+                  body: Stack(
+                    children: <Widget>[
+                      Positioned.fill(
+                        child:  GoogleMap(
+                          onMapCreated: _onMapCreated,
+                          initialCameraPosition: CameraPosition(
+                              target: LatLng(snashot.data!.latitude,snashot.data!.longitude!),
+                              zoom: 18.0
+                          ),
+                          mapType: _currentMapType,
+                          markers: _marker,
+                          onCameraMove: _onCameraMove,
+                        ),
+                      ),
+                      Positioned(
+                        top: 20,
+                        left: 0,
+                        right: 10,
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: Column(
+                            children: <Widget>[
 
-      button(_onMapTypePressed, Icons.map),
-      SizedBox(height: 20.0,),
-      //button(_vehiclePower, Icons.power)
-    ],
-    ),
-    ),
-    ),
-    ],
-    )
+                              button(_onMapTypePressed, Icons.map),
+                              SizedBox(height: 20.0,),
+                              //button(_vehiclePower, Icons.power)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+              );
+            }else {
+              return SpinKitCircle(
+                  color: Colors.white
+              );
+            }
+          }),
     );
   }
 }

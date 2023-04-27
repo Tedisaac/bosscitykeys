@@ -5,6 +5,7 @@ import 'package:bosscitykeys/models/playbackrecordsmodel.dart';
 import 'package:bosscitykeys/models/latlongmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,7 +67,7 @@ class _PlayBackState extends State<PlayBack> {
 
   Future<Playbackrecordsmodel> getPlayBackData() async {
     final prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('token');
+    var token = prefs.getString(Strings.token);
     var carId = prefs.getString('id');
     var startDate = prefs.getString('start_date');
     print(startDate);
@@ -144,23 +145,31 @@ class _PlayBackState extends State<PlayBack> {
         title: Text("Playback"),
         backgroundColor: Colors.amber,
       ),
-      body: FutureBuilder(
-        future: getPlayBackData(),
-        builder: (context,AsyncSnapshot<Playbackrecordsmodel> snapshot){
-          if(snapshot.data != null){
-            for(var i = 0; i < snapshot.data!.data.length; i++){
-              list.add(LatLng(snapshot.data!.data[i].latitude, snapshot.data!.data[i].longitude));
+      body: Container(
+        color: Colors.amberAccent,
+        child: FutureBuilder(
+          future: getPlayBackData(),
+          builder: (context,AsyncSnapshot<Playbackrecordsmodel> snapshot){
+            if(snapshot.data != null){
+              for(var i = 0; i < snapshot.data!.data.length; i++){
+                list.add(LatLng(snapshot.data!.data[i].latitude, snapshot.data!.data[i].longitude));
+              }
+              return  GoogleMap(
+                onMapCreated: _onMapCreated,
+                initialCameraPosition: CameraPosition(target: _center, zoom: 14.0),
+                mapType: _currentMapType,
+                markers: _marker,
+                polylines: _polyline,
+                onCameraMove: _onCameraMove,
+              );
+            } else {
+              return SpinKitCircle(
+                  color: Colors.white
+              );
             }
-          }
-          return  GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(target: _center, zoom: 14.0),
-            mapType: _currentMapType,
-            markers: _marker,
-            polylines: _polyline,
-            onCameraMove: _onCameraMove,
-          );
-        },
+
+          },
+        ),
       )
     );
   }

@@ -5,6 +5,11 @@ class Strings{
   static String cars_list = 'http://track.bosscitykeys.co.ke/api/cars';
 
 
+  //Prefs Constants
+  static String token = "token";
+  static String isLoggedIn = "is_logged_in";
+
+
 
 
 }
