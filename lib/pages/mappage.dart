@@ -85,8 +85,19 @@ class _MapPageState extends State<MapPage> {
     });
   }
 
+  Future<void> moveCamera() async {
+    final GoogleMapController controller = await _googleMapController.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: _center, zoom: 18.0)));
+  }
+
+  _onMyLocationPressed(){
+    setState(() {
+      moveCamera();
+    });
+  }
+
   Widget button(VoidCallback func,IconData iconData){
-    return Container(
+    return SizedBox(
       height: 40.0,
       width: 40.0,
       child: FloatingActionButton(
@@ -99,16 +110,19 @@ class _MapPageState extends State<MapPage> {
   }
 
   Widget showPlayBackIcon(CalendarController _calendarController) {
-    return IconButton(
-        onPressed: () {
-          showPlayBackDialog(context, _calendarController);
-        },
-        icon: Image.asset(
-          'assets/images/playback.png',
-          color: Colors.black,
-          width: 20.0,
-          height: 20.0,
-        ));
+    return Container(
+      margin: const EdgeInsets.only(right: 3.0),
+      child: IconButton(
+          onPressed: () {
+            showPlayBackDialog(context, _calendarController);
+          },
+          icon: Image.asset(
+            'assets/images/playback.png',
+            color: Colors.black,
+            width: 20.0,
+            height: 20.0,
+          )),
+    );
   }
 
 
@@ -153,6 +167,7 @@ class _MapPageState extends State<MapPage> {
 
                               button(_onMapTypePressed, Icons.map),
                               const SizedBox(height: 20.0,),
+                              button(_onMyLocationPressed, Icons.my_location)
                               //button(_vehiclePower, Icons.power)
                             ],
                           ),

@@ -70,9 +70,7 @@ class _PlayBackState extends State<PlayBack> {
     var token = prefs.getString(Strings.token);
     var carId = prefs.getString(Strings.id);
     var startDate = prefs.getString(Strings.startDate);
-    print(startDate);
     var newUrl = Strings.cars_list + "/$carId/records?start_date=$startDate";
-    print(newUrl);
     var client = http.Client();
     var detailsResponse = await client.get(
       Uri.parse(newUrl),
@@ -85,7 +83,7 @@ class _PlayBackState extends State<PlayBack> {
     var playbackData = cnv.jsonDecode(detailsResponse.body);
     playBackrecords = Playbackrecordsmodel.fromJson(playbackData);
     if (detailsResponse.statusCode == 200) {
-      print(playBackrecords);
+
       _center = LatLng(playBackrecords.data[0].latitude, playBackrecords.data[0].longitude);
       return playBackrecords;
     } else {
@@ -134,8 +132,19 @@ class _PlayBackState extends State<PlayBack> {
     });
   }
 
+  Future<void> moveCamera() async {
+    final GoogleMapController controller = await _googleMapController.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: _center, zoom: 14.0)));
+  }
+
+  _onMyLocationPressed(){
+    setState(() {
+      moveCamera();
+    });
+  }
+
   Widget button(VoidCallback func,IconData iconData){
-    return Container(
+    return SizedBox(
       height: 40.0,
       width: 40.0,
       child: FloatingActionButton(
@@ -193,8 +202,9 @@ class _PlayBackState extends State<PlayBack> {
                       alignment: Alignment.topRight,
                       child: Column(
                         children: <Widget>[
-
                           button(_onMapTypePressed, Icons.map),
+                          const SizedBox(height: 20.0,),
+                          button(_onMyLocationPressed, Icons.my_location),
                           const SizedBox(height: 20.0,),
                           //button(_vehiclePower, Icons.power)
                         ],
